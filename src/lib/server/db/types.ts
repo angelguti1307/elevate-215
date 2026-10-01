@@ -26,3 +26,19 @@ export interface VisitStore {
 	/** Most recent visit by visitDate, then createdAt. */
 	latestFor(schoolNumber: string): Promise<Visit | undefined>;
 }
+
+/** The three places a school's name is written down outside the official list. */
+export const NAME_SOURCES = ['reneeNotes', 'grantAgreement', 'quickBooks'] as const;
+export type NameSource = (typeof NAME_SOURCES)[number];
+
+export interface NameVariant {
+	schoolNumber: string;
+	source: NameSource;
+	/** The spelling that source actually uses, verbatim. */
+	variant: string;
+}
+
+export interface NameVariantStore {
+	/** All known variants for one school, at most one per source. */
+	variantsFor(schoolNumber: string): Promise<NameVariant[]>;
+}

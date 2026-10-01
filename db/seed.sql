@@ -302,5 +302,9 @@ INSERT INTO schools (school_number, school_name, district_name, school_type, aun
 INSERT INTO schools (school_number, school_name, district_name, school_type, aun) VALUES ('5188', 'WRIGHT RICHARD R SCH', 'PHILADELPHIA CITY SD', 'District', '126515001') ON CONFLICT (school_number) DO UPDATE SET school_name = EXCLUDED.school_name, district_name = EXCLUDED.district_name, school_type = EXCLUDED.school_type, aun = EXCLUDED.aun;
 INSERT INTO schools (school_number, school_name, district_name, school_type, aun) VALUES ('7233', 'ZIEGLER WILLIAM H SCH', 'PHILADELPHIA CITY SD', 'District', '126515001') ON CONFLICT (school_number) DO UPDATE SET school_name = EXCLUDED.school_name, district_name = EXCLUDED.district_name, school_type = EXCLUDED.school_type, aun = EXCLUDED.aun;
 
+INSERT INTO visits (school_number, visit_date, note_text, created_at) SELECT '7825', '2026-09-30'::date, 'lowk mid', '2026-09-30T15:18:34.639Z'::timestamptz WHERE NOT EXISTS (SELECT 1 FROM visits WHERE school_number = '7825' AND visit_date = '2026-09-30'::date AND note_text = 'lowk mid' AND created_at = '2026-09-30T15:18:34.639Z'::timestamptz);
+INSERT INTO visits (school_number, visit_date, note_text, created_at) SELECT '7904', '2026-09-30'::date, 'lowk mid', '2026-09-30T15:19:19.146Z'::timestamptz WHERE NOT EXISTS (SELECT 1 FROM visits WHERE school_number = '7904' AND visit_date = '2026-09-30'::date AND note_text = 'lowk mid' AND created_at = '2026-09-30T15:19:19.146Z'::timestamptz);
+INSERT INTO visits (school_number, visit_date, note_text, created_at) SELECT '7904', '2026-09-30'::date, 'it''s ahh', '2026-09-30T15:44:21.962Z'::timestamptz WHERE NOT EXISTS (SELECT 1 FROM visits WHERE school_number = '7904' AND visit_date = '2026-09-30'::date AND note_text = 'it''s ahh' AND created_at = '2026-09-30T15:44:21.962Z'::timestamptz);
+
 
 COMMIT;

@@ -27,9 +27,11 @@ A SvelteKit (Svelte 5, TypeScript, adapter-node) app for Elevate215 staff to rec
   - `ageDays`: whole days between calendar dates, where "today" is the date in `America/New_York`.
   - `latestVisit` returns `undefined` for an unknown school and `null` for a known school with no visits.
   - `now` is injectable, which makes tests deterministic.
+- **Name variants (spec v2, `spec v2.md`)** live in `src/lib/server/names.ts`, in `createNameVariantService(schools, variants)`. The record is exactly `{ officialName, reneeNotes, grantAgreement, quickBooks }`. Each source field holds that source's spelling or the literal `"no record"`. The function returns `undefined` for an unknown school. Variants come from a hand-maintained mapping, `data/name-variants.csv` (`SchoolNumber,Source,NameVariant`; override with `NAME_VARIANTS_CSV`), and are never fuzzy-matched. The parser supports quoted fields, rejects unknown sources, and rejects duplicate (school, source) pairs. `scripts/migrate-csv-to-db.ts` has its own copy of these rules, because strip-types can't import the app modules.
 - **Entry points:**
   - `src/routes/+page.server.ts`: the `add` form action, plus a `?school=` lookup in `load`
   - `src/routes/api/schools/[schoolNumber]/latest-visit/+server.ts`: returns the JSON record, or a 404
+  - `src/routes/+page.server.ts` `?names=<schoolNumber>` and `src/routes/api/schools/[schoolNumber]/name-variants/+server.ts`: return the name-variants record, or a 404
 - **Planned DB migration:** `db/schema.sql` is the PostgreSQL schema, and its header lists the migration steps. `scripts/migrate-csv-to-db.ts` generates idempotent seed SQL: schools are upserted and visits are de-duplicated.
 
 ## Gotchas

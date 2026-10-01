@@ -5,7 +5,7 @@
 --   1. Create these tables:            psql "$DATABASE_URL" -f db/schema.sql
 --   2. Generate seed SQL from files:   npm run db:seed-sql   (writes db/seed.sql)
 --   3. Load it:                        psql "$DATABASE_URL" -f db/seed.sql
---   4. Implement SchoolStore/VisitStore with SQL (queries below) and export
+--   4. Implement SchoolStore/VisitStore/NameVariantStore with SQL (queries below) and export
 --      them from src/lib/server/db/index.ts. No other app code changes.
 
 CREATE TABLE IF NOT EXISTS schools (
@@ -31,3 +31,17 @@ CREATE INDEX IF NOT EXISTS visits_latest_idx
 --   SELECT school_number, visit_date, note_text, created_at
 --   FROM visits WHERE school_number = $1
 --   ORDER BY visit_date DESC, created_at DESC LIMIT 1;
+
+-- Spec v2: the spelling each outside source uses for a school. Loaded from
+-- data/name-variants.csv (SchoolNumber,Source,NameVariant) by npm run db:seed-sql.
+-- A missing row for a source means "no record".
+CREATE TABLE IF NOT EXISTS school_name_variants (
+	school_number  TEXT NOT NULL REFERENCES schools (school_number),
+	source         TEXT NOT NULL CHECK (source IN ('reneeNotes', 'grantAgreement', 'quickBooks')),
+	variant        TEXT NOT NULL CHECK (length(trim(variant)) > 0),
+	PRIMARY KEY (school_number, source)
+);
+
+-- NameVariantStore.variantsFor:
+--   SELECT school_number, source, variant
+--   FROM school_name_variants WHERE school_number = $1;

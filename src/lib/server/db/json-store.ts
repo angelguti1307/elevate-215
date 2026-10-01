@@ -3,16 +3,14 @@ import { dirname } from 'node:path';
 import type { Visit, VisitStore } from './types';
 import { pickLatest } from '../visits';
 
-/**
- * v1 VisitStore: all visits in one JSON array on disk.
- * Replace with a SQL-backed store (see db/schema.sql) without touching callers.
- */
+
+// A function that manages visits stored at a specific file location //
 export function jsonVisitStore(path: string): VisitStore {
+// Checks if the file exists. If it does, it opens and reads all the saved visits.//
 	const read = (): Visit[] => (existsSync(path) ? JSON.parse(readFileSync(path, 'utf-8')) : []);
 
-	// Serialize writes so concurrent requests don't clobber each other.
 	let queue: Promise<void> = Promise.resolve();
-
+// Ensures guests stand in line so two people don't try to write on the exact same page at the exact same time //
 	return {
 		add(visit) {
 			const write = queue.then(() => {
@@ -22,10 +20,11 @@ export function jsonVisitStore(path: string): VisitStore {
 				writeFileSync(`${path}.tmp`, JSON.stringify(visits, null, 2));
 				renameSync(`${path}.tmp`, path);
 			});
-			// A failed write must not poison later ones.
+			// A failed write must not poison later ones.//
 			queue = write.catch(() => {});
 			return write;
 		},
+	//This function waits for all current writes to finish, then reads through the stored logs to find and return the most recent visit for a specific school.//
 		async latestFor(schoolNumber) {
 			await queue;
 			return pickLatest(read().filter((v) => v.schoolNumber === schoolNumber));

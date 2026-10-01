@@ -1,15 +1,18 @@
 import { fail } from '@sveltejs/kit';
-import { schoolStore, visitService } from '$lib/server/db';
+import { nameVariantService, schoolStore, visitService } from '$lib/server/db';
 import { todayLocal, ValidationError } from '$lib/server/visits';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ url }) => {
 	const school = url.searchParams.get('school') ?? '';
+	const names = url.searchParams.get('names') ?? '';
 	return {
 		schools: await schoolStore.list(),
 		today: todayLocal(),
 		selected: school,
-		latest: school ? ((await visitService.latestVisit(school)) ?? null) : null
+		latest: school ? ((await visitService.latestVisit(school)) ?? null) : null,
+		namesSelected: names,
+		variants: names ? ((await nameVariantService.nameVariants(names)) ?? null) : null
 	};
 };
 

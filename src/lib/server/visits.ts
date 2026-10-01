@@ -1,5 +1,7 @@
+// This imports saved information and visits. // 
 import type { SchoolStore, Visit, VisitStore } from './db/types';
 
+// 
 /** The spec's output shape — exactly these four fields. */
 export interface LatestVisitRecord {
 	schoolName: string;

@@ -54,13 +54,12 @@ declare module '$env/static/private' {
 	export const DISPLAY: string;
 	export const DriverData: string;
 	export const EDITOR: string;
-	export const EFC_12976_1262719628: string;
-	export const EFC_12976_1592913036: string;
-	export const EFC_12976_2283032206: string;
-	export const EFC_12976_2775293581: string;
-	export const EFC_12976_2946480783: string;
-	export const EFC_12976_3789132940: string;
-	export const EFC_12976_4126798990: string;
+	export const EFC_11772_1262719628: string;
+	export const EFC_11772_1592913036: string;
+	export const EFC_11772_2283032206: string;
+	export const EFC_11772_2775293581: string;
+	export const EFC_11772_3789132940: string;
+	export const EFC_11772_4126798990: string;
 	export const EXEPATH: string;
 	export const FPS_BROWSER_APP_PROFILE_STRING: string;
 	export const FPS_BROWSER_USER_PROFILE_STRING: string;
@@ -153,7 +152,6 @@ declare module '$env/static/private' {
 	export const WINDIR: string;
 	export const ZES_ENABLE_SYSMAN: string;
 	export const _: string;
-	export const __COMPAT_LAYER: string;
 }
 
 /**
@@ -256,13 +254,12 @@ declare module '$env/dynamic/private' {
 		DISPLAY: string;
 		DriverData: string;
 		EDITOR: string;
-		EFC_12976_1262719628: string;
-		EFC_12976_1592913036: string;
-		EFC_12976_2283032206: string;
-		EFC_12976_2775293581: string;
-		EFC_12976_2946480783: string;
-		EFC_12976_3789132940: string;
-		EFC_12976_4126798990: string;
+		EFC_11772_1262719628: string;
+		EFC_11772_1592913036: string;
+		EFC_11772_2283032206: string;
+		EFC_11772_2775293581: string;
+		EFC_11772_3789132940: string;
+		EFC_11772_4126798990: string;
 		EXEPATH: string;
 		FPS_BROWSER_APP_PROFILE_STRING: string;
 		FPS_BROWSER_USER_PROFILE_STRING: string;
@@ -355,7 +352,6 @@ declare module '$env/dynamic/private' {
 		WINDIR: string;
 		ZES_ENABLE_SYSMAN: string;
 		_: string;
-		__COMPAT_LAYER: string;
 		[key: `PUBLIC_${string}`]: undefined;
 		[key: `${string}`]: string | undefined;
 	}

@@ -29,6 +29,34 @@ You'll see four things:
 
 "Age (days)" tells you how long ago the visit was, so you can tell at a glance whether the notes are fresh or out of date.
 
+**See how each source spells a school's name**
+
+1. Under **Name in each source**, pick the school's official name from the list.
+2. Click **Look up**.
+
+You'll see the spelling used in each of the three places, or "no record" if that place doesn't have the school:
+
+| What you see    | Example                   |
+| --------------- | ------------------------- |
+| Official name   | MASTERMAN JULIA R SEC SCH |
+| Renée's notes   | Masterman                 |
+| Grant agreement | no record                 |
+| QuickBooks      | Masterman, Julia R.       |
+
+The spellings come from `data/name-variants.csv`, which someone fills in by hand. Each row is one school, one source, and the exact spelling that source uses:
+
+```csv
+SchoolNumber,Source,NameVariant
+3808,reneeNotes,Masterman
+3808,quickBooks,"Masterman, Julia R."
+```
+
+- `SchoolNumber` is the number from the school list.
+- `Source` must be exactly `reneeNotes`, `grantAgreement`, or `quickBooks`.
+- Put quotes around a spelling that contains a comma.
+- A school can have only one spelling per source. Leave a source out to show "no record".
+- Restart the app after editing the file.
+
 ## Good to know
 
 - **The school list is fixed.** It has all 301 Philadelphia schools from the Elevate215 School Performance Model. You choose from the list instead of typing a name, so everyone is always talking about the same school.
@@ -108,12 +136,23 @@ curl http://localhost:5173/api/schools/7825/latest-visit
 
 `{schoolNumber}` is the school's number from the school list (for example, `7825`). If the school isn't on the list, or has no visits yet, you'll get a "not found" (404) response.
 
+They can also ask how each source spells a school's name:
+
+`GET /api/schools/{schoolNumber}/name-variants`
+
+```json
+{ "officialName": "MASTERMAN JULIA R SEC SCH", "reneeNotes": "Masterman", "grantAgreement": "no record", "quickBooks": "Masterman, Julia R." }
+```
+
+If the school isn't on the list, you'll get a 404.
+
 ### Settings
 
 | Setting       | What it controls                      | Default                          |
 | ------------- | ------------------------------------- | -------------------------------- |
 | `SCHOOLS_CSV` | Which file the school list comes from | The School Rollup CSV in `data/` |
 | `VISITS_JSON` | Where visit notes are saved           | `data/visits.json`               |
+| `NAME_VARIANTS_CSV` | Which file the name spellings come from | `data/name-variants.csv` |
 
 Set them in front of the command in bash:
 
@@ -132,16 +171,16 @@ export DATABASE_URL="postgres://user:password@localhost:5432/elevate215"
 # 1. Create the tables
 psql "$DATABASE_URL" -f db/schema.sql
 
-# 2. Turn the school list and saved visits into database commands
+# 2. Turn the school list, saved visits, and name spellings into database commands
 npm run db:seed-sql
 
 # 3. Load them
 psql "$DATABASE_URL" -f db/seed.sql
 ```
 
-Then write database versions of `SchoolStore` and `VisitStore` (the query for the latest visit is in `db/schema.sql`), and use them in `src/lib/server/db/index.ts`.
+Then write database versions of `SchoolStore`, `VisitStore`, and `NameVariantStore` (the queries are in `db/schema.sql`), and use them in `src/lib/server/db/index.ts`.
 
-Step 3 is safe to repeat. Schools are updated instead of duplicated, and visits that were already loaded are skipped.
+Step 3 is safe to repeat. Schools and name spellings are updated instead of duplicated, and visits that were already loaded are skipped. Step 2 stops with an error if `data/name-variants.csv` has a school number that isn't on the list, an unknown source, or two spellings for the same school and source. Removing a row from the CSV does not delete it from the database.
 
 ### Saving your changes with Git
 
@@ -155,11 +194,12 @@ git push                        # send it to GitHub
 ### Where things are
 
 ```
-data/            The school list (CSV) and saved visits
+data/            The school list (CSV), saved visits, and name spellings
 db/schema.sql    The planned database layout
 scripts/         Tool that prepares data for the database
 src/lib/server/  School list, visit rules, and saving
 src/routes/      The web page and the data address for other programs
-spec.md          The full requirements
+spec.md          The requirements for visit notes
+spec v2.md       The requirements for name spellings
 CLAUDE.md        Notes for Claude Code when working in this repo
 ```

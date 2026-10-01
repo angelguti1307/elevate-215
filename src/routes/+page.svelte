@@ -3,6 +3,11 @@
 	import { invalidateAll } from '$app/navigation';
 
 	let { data, form } = $props();
+	
+	$effect(() => {
+		console.log('updated:', data, form);
+	});
+
 </script>
 
 <main>
@@ -15,6 +20,7 @@
 			action="?/add"
 			use:enhance={() =>
 				async ({ result, update }) => {
+					console.log('submit result:', result);
 					await update({ reset: result.type === 'success' });
 					await invalidateAll();
 				}}
@@ -66,6 +72,33 @@
 			</dl>
 		{:else if data.selected}
 			<p>No visits recorded for this school yet.</p>
+		{/if}
+	</section>
+
+	<section>
+		<h2>Name in each source</h2>
+		<form method="GET">
+			<label>
+				Official school name
+				<select name="names" required value={data.namesSelected}>
+					<option value="" disabled>Choose a school…</option>
+					{#each data.schools as s (s.schoolNumber)}
+						<option value={s.schoolNumber}>{s.schoolName}</option>
+					{/each}
+				</select>
+			</label>
+			<button type="submit">Look up</button>
+		</form>
+
+		{#if data.variants}
+			<dl>
+				<dt>Official name</dt><dd>{data.variants.officialName}</dd>
+				<dt>Renée's notes</dt><dd>{data.variants.reneeNotes}</dd>
+				<dt>Grant agreement</dt><dd>{data.variants.grantAgreement}</dd>
+				<dt>QuickBooks</dt><dd>{data.variants.quickBooks}</dd>
+			</dl>
+		{:else if data.namesSelected}
+			<p>That school is not in the official list.</p>
 		{/if}
 	</section>
 </main>

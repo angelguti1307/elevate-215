@@ -29,19 +29,21 @@ declare module "$app/types" {
 	type MatcherParam<M> = M extends (param : string) => param is (infer U extends string) ? U : string;
 
 	export interface AppTypes {
-		RouteId(): "/" | "/api" | "/api/schools" | "/api/schools/[schoolNumber]" | "/api/schools/[schoolNumber]/latest-visit";
+		RouteId(): "/" | "/api" | "/api/schools" | "/api/schools/[schoolNumber]" | "/api/schools/[schoolNumber]/latest-visit" | "/api/schools/[schoolNumber]/name-variants";
 		RouteParams(): {
 			"/api/schools/[schoolNumber]": { schoolNumber: string };
-			"/api/schools/[schoolNumber]/latest-visit": { schoolNumber: string }
+			"/api/schools/[schoolNumber]/latest-visit": { schoolNumber: string };
+			"/api/schools/[schoolNumber]/name-variants": { schoolNumber: string }
 		};
 		LayoutParams(): {
 			"/": { schoolNumber?: string | undefined };
 			"/api": { schoolNumber?: string | undefined };
 			"/api/schools": { schoolNumber?: string | undefined };
 			"/api/schools/[schoolNumber]": { schoolNumber: string };
-			"/api/schools/[schoolNumber]/latest-visit": { schoolNumber: string }
+			"/api/schools/[schoolNumber]/latest-visit": { schoolNumber: string };
+			"/api/schools/[schoolNumber]/name-variants": { schoolNumber: string }
 		};
-		Pathname(): "/" | `/api/schools/${string}/latest-visit` & {};
+		Pathname(): "/" | `/api/schools/${string}/latest-visit` & {} | `/api/schools/${string}/name-variants` & {};
 		ResolvedPathname(): `${"" | `/${string}`}${ReturnType<AppTypes['Pathname']>}`;
 		Asset(): string & {};
 	}
